@@ -1,30 +1,27 @@
 import { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
+import AuthRoutes from './routes/AuthRoutes';
+import PostRoutes from './routes/PostRoutes';
 import generalRoutes from './routes/generalRoutes';
-import './App.css'
+import './App.css';
 
 function App() {
- 
-
   return (
     <Router>
-      <Suspense fallback={
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-600"></div>
-        </div>
-      }>
+      <Suspense fallback={<div>Loading...</div>}>
         <Routes>
-          {generalRoutes.map((route, index) => (
-            <Route
-              key={index}
-              path={route.path}
-              element={route.element}
-            />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/auth/*" element={<AuthRoutes />} />
+          <Route path="/posts/*" element={<PostRoutes />} />
+          {/* Add general routes */}
+          {generalRoutes.map((route) => (
+            <Route key={route.path} path={route.path} element={route.element} />
           ))}
         </Routes>
       </Suspense>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;

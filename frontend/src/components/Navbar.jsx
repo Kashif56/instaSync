@@ -22,10 +22,8 @@ const Navbar = () => {
             <Link to="/about" className="text-gray-300 hover:text-purple-400 px-3 py-2 text-sm font-medium transition-colors duration-200">
               About
             </Link>
-            <Link to="/login" className="text-gray-300 hover:text-purple-400 px-3 py-2 text-sm font-medium transition-colors duration-200">
-              Login
-            </Link>
-            <Link to="/signup" className="bg-purple-600 text-white hover:bg-purple-700 px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+           
+            <Link to="/auth/signup" className="bg-purple-600 text-white hover:bg-purple-700 px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
               Get Started
             </Link>
           </div>

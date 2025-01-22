@@ -1,9 +1,10 @@
 import React from 'react';
-import SignUpForm from '../../components/Auth/SignUpForm';
+import LoginForm from '../../components/Auth/LoginForm';
 import SocialLogin from '../../components/Auth/SocialLogin';
+
 import { Link } from 'react-router-dom';
 
-const AccountCreation = () => {
+const Login = () => {
   return (
     <div className="min-h-screen bg-gradient-to-r from-gray-900 via-purple-900 to-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       {/* Animated background */}
@@ -23,7 +24,7 @@ const AccountCreation = () => {
 
       {/* Content */}
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
-      <Link
+        <Link
         to='/'>
         <h1 className="text-center text-4xl font-bold tracking-tighter">
           <span className="bg-gradient-to-r from-purple-400 to-pink-300 text-transparent bg-clip-text">Insta</span>
@@ -31,16 +32,16 @@ const AccountCreation = () => {
         </h1>
         </Link>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-300">
-          Create your account
+          Welcome back
         </h2>
         <p className="mt-2 text-center text-sm text-gray-400">
-          Join thousands of creators and businesses managing their Instagram presence with InstaSync
+          Sign in to continue managing your Instagram presence
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         <div className="bg-gray-900/50 backdrop-blur-xl py-8 px-4 shadow-xl sm:rounded-lg sm:px-10 border border-gray-800">
-          <SignUpForm />
+          <LoginForm />
           <SocialLogin />
         </div>
       </div>
@@ -59,4 +60,4 @@ const AccountCreation = () => {
   );
 };
 
-export default AccountCreation;
+export default Login;

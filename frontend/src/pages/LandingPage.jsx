@@ -1,10 +1,10 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
-import Hero from '../components/Hero';
-import WhyUs from '../components/WhyUs';
-import Features from '../components/Features';
-import Clients from '../components/Clients';
-import Testimonials from '../components/Testimonials';
+import Hero from '../components/LandingPage/Hero';
+import WhyUs from '../components/LandingPage/WhyUs';
+import Features from '../components/LandingPage/Features';
+import Clients from '../components/LandingPage/Clients';
+import Testimonials from '../components/LandingPage/Testimonials';
 import Footer from '../components/Footer';
 
 const LandingPage = () => {
