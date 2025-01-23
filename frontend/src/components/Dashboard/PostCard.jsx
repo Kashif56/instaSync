@@ -1,52 +1,116 @@
 import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AiOutlineEdit, AiOutlineDelete, AiOutlineHeart, AiOutlineInstagram } from 'react-icons/ai';
+import { BiMessageRounded } from 'react-icons/bi';
+import { BsCalendarEvent, BsClock } from 'react-icons/bs';
 
 const PostCard = ({ post }) => {
+  const navigate = useNavigate();
+
+  const handleCardClick = (e) => {
+    // Don't navigate if clicking on action buttons
+    if (e.target.closest('.action-buttons')) {
+      return;
+    }
+    navigate(`/posts/${post.id}`);
+  };
+
+  // Format date for display
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
   return (
-    <div className="bg-gray-900/50 backdrop-blur-xl rounded-lg border border-gray-800 overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-[1.02] hover:border-purple-500/50">
+    <div 
+      onClick={handleCardClick}
+      className="group relative bg-gray-900/60 backdrop-blur-xl rounded-xl border border-gray-800 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/10 hover:border-purple-500/50 hover:-translate-y-1 cursor-pointer"
+    >
+      {/* Instagram Icon Badge */}
+      <div className="absolute top-3 left-3 z-10">
+        <div className="bg-black/50 backdrop-blur-md p-2 rounded-lg">
+          <AiOutlineInstagram className="w-5 h-5 text-purple-400" />
+        </div>
+      </div>
+
+      {/* Status Badge */}
+      <div className="absolute top-3 right-3 z-10">
+        <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+          post.scheduledFor 
+            ? 'bg-purple-500 text-white border border-purple-500/30' 
+            : 'bg-green-500 text-white border border-green-500/30'
+        }`}>
+          {post.scheduledFor ? 'Scheduled' : 'Posted'}
+        </div>
+      </div>
+
+      {/* Image Container */}
       <div className="relative aspect-square">
         <img
           src={post.imageUrl}
           alt={post.caption}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent opacity-0 hover:opacity-100 transition-opacity duration-300">
+        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <div className="absolute bottom-0 left-0 right-0 p-4">
-            <p className="text-white text-sm line-clamp-2">{post.caption}</p>
+            <p className="text-white text-sm line-clamp-2 font-medium">{post.caption}</p>
           </div>
         </div>
       </div>
+
+      {/* Content */}
       <div className="p-4">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center space-x-2">
-            <span className="text-purple-400 text-sm">{post.scheduledFor ? 'Scheduled' : 'Posted'}</span>
-            <span className="text-gray-400 text-sm">•</span>
-            <span className="text-gray-400 text-sm">{post.date}</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <button className="text-gray-400 hover:text-purple-400 transition-colors duration-200">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-              </svg>
-            </button>
-            <button className="text-gray-400 hover:text-red-400 transition-colors duration-200">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
-            </button>
-          </div>
+        {/* Schedule Info */}
+        <div className="flex items-center space-x-2 mb-3">
+          {post.scheduledFor ? (
+            <>
+              <BsCalendarEvent className="w-4 h-4 text-purple-400" />
+              <span className="text-gray-400 text-sm">
+                Scheduled for {formatDate(post.scheduledFor)}
+              </span>
+            </>
+          ) : (
+            <>
+              <BsClock className="w-4 h-4 text-purple-400" />
+              <span className="text-gray-400 text-sm">Posted {post.date}</span>
+            </>
+          )}
         </div>
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-1">
-            <svg className="w-4 h-4 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-            </svg>
-            <span className="text-gray-400 text-sm">{post.likes}</span>
+
+        {/* Engagement Stats */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-1">
+              <div className="bg-red-500/10 p-1.5 rounded-lg">
+                <AiOutlineHeart className="w-4 h-4 text-red-400" />
+              </div>
+              <span className="text-gray-400 text-sm font-medium">{post.likes}</span>
+            </div>
+            <div className="flex items-center space-x-1">
+              <div className="bg-purple-500/10 p-1.5 rounded-lg">
+                <BiMessageRounded className="w-4 h-4 text-purple-400" />
+              </div>
+              <span className="text-gray-400 text-sm font-medium">{post.comments}</span>
+            </div>
           </div>
-          <div className="flex items-center space-x-1">
-            <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
-            </svg>
-            <span className="text-gray-400 text-sm">{post.comments}</span>
+
+          {/* Action Buttons */}
+          <div className="flex items-center space-x-2 action-buttons opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            <button className="bg-gray-800/50 hover:bg-purple-500/20 p-2 rounded-lg transition-colors duration-200"
+            onClick={() => navigate(`/posts/${post.id}/edit`)}
+            >
+              <AiOutlineEdit className="w-4 h-4 text-purple-400" />
+            </button>
+            <button className="bg-gray-800/50 hover:bg-red-500/20 p-2 rounded-lg transition-colors duration-200"
+            onClick={() => handleDelete(post.id)}
+            >
+              <AiOutlineDelete className="w-4 h-4 text-red-400" />
+            </button>
           </div>
         </div>
       </div>

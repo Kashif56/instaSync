@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
-import LoginForm from '../../components/Auth/LoginForm';
-import SocialLogin from '../../components/Auth/SocialLogin';
-import Toast from '../../components/Toast';
-
 import { Link } from 'react-router-dom';
+import SignUpForm from '../../components/Auth/SignUpForm';
+import Toast from '../../components/Toast';
+import SocialLogin from '../../components/Auth/SocialLogin';
 
-const Login = () => {
+const SignUp = () => {
   const [toast, setToast] = useState(null);
 
-  const handleLogin = async (credentials) => {
+  const handleSignUp = async (userData) => {
     try {
-      // TODO: Implement login logic
-      console.log('Logging in with:', credentials);
-      setToast({ type: 'success', message: 'Login successful!' });
-      // Navigate to dashboard after successful login
+      // TODO: Implement signup logic
+      console.log('Signing up with:', userData);
+      setToast({ type: 'success', message: 'Account created successfully!' });
+      // Navigate to login after successful signup
     } catch (error) {
-      setToast({ type: 'error', message: error.message || 'Login failed. Please try again.' });
+      setToast({ type: 'error', message: error.message || 'Signup failed. Please try again.' });
     }
   };
 
@@ -46,7 +45,7 @@ const Login = () => {
             </h1>
           </Link>
           <h2 className="mt-6 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-300">
-            Sign in to your account
+            Create your account
           </h2>
         </div>
 
@@ -58,12 +57,15 @@ const Login = () => {
               onClose={() => setToast(null)}
             />
           )}
-          <LoginForm onSubmit={handleLogin} />
-          <SocialLogin />
+          <SignUpForm onSubmit={handleSignUp} />
+          
+          <div className="mt-6 text-center">
+            <SocialLogin />
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default SignUp;

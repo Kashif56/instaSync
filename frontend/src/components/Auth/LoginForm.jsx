@@ -75,7 +75,7 @@ const LoginForm = () => {
 
         <div className="text-sm">
           <Link
-            to="/auth/reset-password"
+            to="/auth/forgot-password"
             className="font-medium text-purple-400 hover:text-purple-300 transition-colors duration-300"
           >
             Forgot your password?
