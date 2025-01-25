@@ -12,7 +12,7 @@ const PostCard = ({ post }) => {
     if (e.target.closest('.action-buttons')) {
       return;
     }
-    navigate(`/posts/${post.id}`);
+    navigate(`/posts/${post.postId}`);
   };
 
   // Format date for display
@@ -41,21 +41,23 @@ const PostCard = ({ post }) => {
       {/* Status Badge */}
       <div className="absolute top-3 right-3 z-10">
         <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-          post.scheduledFor 
+          post.scheduledDateTime 
             ? 'bg-purple-500 text-white border border-purple-500/30' 
             : 'bg-green-500 text-white border border-green-500/30'
         }`}>
-          {post.scheduledFor ? 'Scheduled' : 'Posted'}
+          {post.scheduledDateTime ? 'Scheduled' : 'Posted'}
         </div>
       </div>
 
       {/* Image Container */}
       <div className="relative aspect-square">
         <img
-          src={post.imageUrl}
+          loading="lazy"
+          src={post.media.length > 0 ? `http://localhost:8000${post.media[0].mediaFile}` : 'https://via.placeholder.com/300x300'}
           alt={post.caption}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
+
         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <div className="absolute bottom-0 left-0 right-0 p-4">
             <p className="text-white text-sm line-clamp-2 font-medium">{post.caption}</p>
@@ -67,17 +69,17 @@ const PostCard = ({ post }) => {
       <div className="p-4">
         {/* Schedule Info */}
         <div className="flex items-center space-x-2 mb-3">
-          {post.scheduledFor ? (
+          {post.scheduledDateTime ? (
             <>
               <BsCalendarEvent className="w-4 h-4 text-purple-400" />
               <span className="text-gray-400 text-sm">
-                Scheduled for {formatDate(post.scheduledFor)}
+                Scheduled for {formatDate(post.scheduledDateTime)}
               </span>
             </>
           ) : (
             <>
               <BsClock className="w-4 h-4 text-purple-400" />
-              <span className="text-gray-400 text-sm">Posted {post.date}</span>
+              <span className="text-gray-400 text-sm">Posted {formatDate(post.postedAt)}</span>
             </>
           )}
         </div>
@@ -102,12 +104,12 @@ const PostCard = ({ post }) => {
           {/* Action Buttons */}
           <div className="flex items-center space-x-2 action-buttons opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             <button className="bg-gray-800/50 hover:bg-purple-500/20 p-2 rounded-lg transition-colors duration-200"
-            onClick={() => navigate(`/posts/${post.id}/edit`)}
+            onClick={() => navigate(`/posts/${post.postId}/edit`)}
             >
               <AiOutlineEdit className="w-4 h-4 text-purple-400" />
             </button>
             <button className="bg-gray-800/50 hover:bg-red-500/20 p-2 rounded-lg transition-colors duration-200"
-            onClick={() => handleDelete(post.id)}
+            onClick={() => handleDelete(post.postId)}
             >
               <AiOutlineDelete className="w-4 h-4 text-red-400" />
             </button>

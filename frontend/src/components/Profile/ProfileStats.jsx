@@ -1,5 +1,5 @@
 import React from 'react';
-import { AiOutlineInstagram, AiOutlineSchedule, AiOutlineCheckCircle, AiOutlineLike, AiOutlineComment, AiOutlineBarChart } from 'react-icons/ai';
+import { AiOutlineInstagram, AiOutlineSchedule, AiOutlineCheckCircle, AiOutlineWarning } from 'react-icons/ai';
 
 const StatCard = ({ icon: Icon, label, value, subtext }) => (
   <div className="bg-gray-900/30 backdrop-blur-xl p-6 rounded-xl border border-gray-800 hover:border-purple-500/50 transition-colors">
@@ -21,46 +21,37 @@ const ProfileStats = ({ stats }) => {
     {
       icon: AiOutlineInstagram,
       label: 'Total Posts',
-      value: stats.totalPosts,
+      value: stats.totalPosts || 0,
       subtext: 'All time'
     },
     {
       icon: AiOutlineSchedule,
       label: 'Scheduled',
-      value: stats.scheduledPosts,
+      value: stats.scheduledPosts || 0,
       subtext: 'Pending'
     },
     {
       icon: AiOutlineCheckCircle,
-      label: 'Published',
-      value: stats.publishedPosts,
-      subtext: 'Complete'
+      label: 'Completed',
+      value: stats.completedPosts || 0,
+      subtext: 'Success'
     },
     {
-      icon: AiOutlineLike,
-      label: 'Total Likes',
-      value: stats.totalLikes,
-      subtext: 'All posts'
-    },
-    {
-      icon: AiOutlineComment,
-      label: 'Comments',
-      value: stats.totalComments,
-      subtext: 'All posts'
-    },
-    {
-      icon: AiOutlineBarChart,
-      label: 'Engagement',
-      value: stats.avgEngagement,
-      subtext: 'Average'
+      icon: AiOutlineWarning,
+      label: 'Failed',
+      value: stats.failedPosts || 0,
+      subtext: 'Error'
     }
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {statItems.map((item, index) => (
-        <StatCard key={index} {...item} />
-      ))}
+    <div className="bg-gray-900/60 backdrop-blur-xl p-8 rounded-2xl border border-gray-800">
+      <h2 className="text-2xl font-semibold text-white mb-8">Account Statistics</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {statItems.map((item, index) => (
+          <StatCard key={index} {...item} />
+        ))}
+      </div>
     </div>
   );
 };

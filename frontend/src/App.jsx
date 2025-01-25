@@ -4,6 +4,8 @@ import LandingPage from './pages/LandingPage';
 import AuthRoutes from './routes/AuthRoutes';
 import PostRoutes from './routes/PostRoutes';
 import generalRoutes from './routes/generalRoutes';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
 function App() {
@@ -19,6 +21,18 @@ function App() {
             <Route key={route.path} path={route.path} element={route.element} />
           ))}
         </Routes>
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
       </Suspense>
     </Router>
   );

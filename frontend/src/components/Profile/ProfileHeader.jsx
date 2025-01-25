@@ -14,7 +14,7 @@ const ProfileHeader = ({ user, onImageChange }) => {
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-400">
-              {user?.name?.charAt(0).toUpperCase() || 'U'}
+              {user.name?.charAt(0).toUpperCase() || 'U'}
             </div>
           )}
         </div>

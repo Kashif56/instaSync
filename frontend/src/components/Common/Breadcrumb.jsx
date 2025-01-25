@@ -1,40 +1,28 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { HiChevronRight, HiHome } from 'react-icons/hi';
+import { HiChevronRight } from 'react-icons/hi';
 
 const Breadcrumb = ({ items }) => {
   return (
-    <nav aria-label="Breadcrumb" className="mb-6">
-      <ol className="flex items-center space-x-2 text-sm text-gray-400">
-        <li>
-          <Link
-            to="/"
-            className="flex items-center hover:text-purple-400 transition-colors"
-            aria-label="Home"
-          >
-            <HiHome className="w-4 h-4" />
-          </Link>
-        </li>
+    <nav className="flex" aria-label="Breadcrumb">
+      <ol className="flex items-center space-x-2">
         {items.map((item, index) => (
-          <React.Fragment key={index}>
-            <li className="flex items-center">
-              <HiChevronRight className="w-4 h-4" aria-hidden="true" />
-            </li>
-            <li>
-              {index === items.length - 1 ? (
-                <span className="text-purple-400" aria-current="page">
-                  {item.label}
-                </span>
-              ) : (
-                <Link
-                  to={item.path}
-                  className="hover:text-purple-400 transition-colors"
-                >
-                  {item.label}
-                </Link>
-              )}
-            </li>
-          </React.Fragment>
+          <li key={item.href} className="flex items-center">
+            {index > 0 && (
+              <HiChevronRight className="flex-shrink-0 h-5 w-5 text-gray-500" aria-hidden="true" />
+            )}
+            <Link
+              to={item.href}
+              className={`ml-2 text-sm font-medium ${
+                index === items.length - 1
+                  ? 'text-purple-400 cursor-default'
+                  : 'text-gray-400 hover:text-gray-300'
+              }`}
+              aria-current={index === items.length - 1 ? 'page' : undefined}
+            >
+              {item.label}
+            </Link>
+          </li>
         ))}
       </ol>
     </nav>

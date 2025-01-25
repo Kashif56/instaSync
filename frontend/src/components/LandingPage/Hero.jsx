@@ -1,7 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { AiOutlineRight } from 'react-icons/ai';
 
 const Hero = () => {
+
+  const accessToken = localStorage.getItem('token')
+
+
+
   return (
     <div className="relative bg-gradient-to-r from-gray-900 via-purple-900 to-gray-900 overflow-hidden">
       {/* Animated background */}
@@ -35,12 +41,25 @@ const Hero = () => {
               </p>
               <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
                 <div className="rounded-md shadow">
-                  <Link
+                  {accessToken ? (
+                    <Link
+                    to='/posts/add'
+                    className="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 md:py-4 md:text-lg md:px-10 transition-all duration-300 transform hover:scale-105"
+                    >
+                    <span className='flex items-center gap-1'><AiOutlineRight /> Schedule Posts</span>
+                    
+                  </Link>
+                  ) : (
+                    <Link
                     to="/auth/signup"
                     className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 md:py-4 md:text-lg md:px-10 transition-all duration-300 transform hover:scale-105"
                   >
-                    Get Started Free
+                    <span className='flex items-center gap-1'>Get Started Free <AiOutlineRight /></span>
+                    
                   </Link>
+                  )}
+                  
+                  
                 </div>
                 <div className="mt-3 sm:mt-0 sm:ml-3">
                   <Link

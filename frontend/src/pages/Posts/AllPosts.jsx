@@ -1,36 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PostsFilter from '../../components/Dashboard/PostsFilter';
 import PostsGrid from '../../components/Dashboard/PostsGrid';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
+import { toast } from 'react-toastify';
+
+import { getUserPosts } from '../../api/postApiService';
 
 const AllPosts = () => {
-  // Sample data - replace with actual data from your backend
-  const posts = [
-    {
-      id: 1,
-      imageUrl: 'https://images.unsplash.com/photo-1682687220742-aba13b6e50ba',
-      caption: 'Beautiful sunset at the beach #nature #sunset #peace',
-      date: '2h ago',
-      likes: 234,
-      comments: 18,
-      scheduledFor: null
-    },
-    {
-      id: 2,
-      imageUrl: 'https://images.unsplash.com/photo-1682687220063-4742bd7fd538',
-      caption: 'Morning coffee and work setup #productivity #workspace',
-      date: 'Tomorrow at 9:00 AM',
-      likes: 0,
-      comments: 0,
-      scheduledFor: '2024-01-24T09:00:00'
-    },
-    // Add more sample posts as needed
-  ];
+
+  const [posts, setPosts] = useState([]);
+  const [toast, setToast] = useState(null);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await getUserPosts();
+        if(response.status == 'success'){
+          setPosts(response.data);
+        }
+        
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+        toast.error('Failed to load posts. Please try again.');
+      }
+    };
+    fetchPosts();
+  }, []);
+
+  const handleDeletePost = async (postId) => {
+    try {
+      // await deletePost(postId); // This function is not defined in the original code
+      setPosts(posts.filter(post => post.id !== postId));
+      toast.success('Post deleted successfully');
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      toast.error('Failed to delete post. Please try again.');
+    }
+  };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-r from-gray-900 via-purple-900 to-gray-900">
-      <Navbar />
+    <>
+      {/* Toast */}
+      {/* Removed the toast component as it's not needed with react-toastify */}
+      
+      <div className="min-h-screen flex flex-col bg-gradient-to-r from-gray-900 via-purple-900 to-gray-900">
+        <Navbar />
       
       {/* Background pattern */}
       <div className="absolute inset-0 overflow-hidden">
@@ -71,7 +86,7 @@ const AllPosts = () => {
 
         {/* Posts Grid */}
         <div className="mt-8">
-          <PostsGrid posts={posts} />
+          <PostsGrid posts={posts} onDeletePost={handleDeletePost} />
         </div>
 
         {/* Empty State */}
@@ -113,6 +128,7 @@ const AllPosts = () => {
         <div className="absolute w-full h-full bg-gradient-to-r from-purple-600 to-pink-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
       </div>
     </div>
+    </>
   );
 };
 

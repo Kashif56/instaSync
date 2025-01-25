@@ -42,7 +42,13 @@ const ImageCarousel = ({ images, onRemove }) => {
     if (typeof image === 'string') {
       return image;
     }
-    return URL.createObjectURL(image);
+    if (image.url) {
+      return image.url;
+    }
+    if (image instanceof File) {
+      return URL.createObjectURL(image);
+    }
+    return '';
   };
 
   if (!images || images.length === 0) {
@@ -62,7 +68,12 @@ const ImageCarousel = ({ images, onRemove }) => {
         {/* Remove Button */}
         {onRemove && (
           <button
-            onClick={() => handleRemove(currentIndex)}
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleRemove(currentIndex);
+            }}
             className="absolute top-4 right-4 bg-red-500/80 text-white px-2 py-1 rounded-lg hover:bg-red-600/80 transition-colors z-20"
           >
             ×

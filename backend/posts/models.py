@@ -1,14 +1,56 @@
 from enum import unique
 from django.db import models
 from django.contrib.auth.models import User
+import os
+from django.core.exceptions import ValidationError
 
+def validate_file_extension(value):
+    ext = os.path.splitext(value.name)[1]
+    valid_extensions = ['.jpg', '.jpeg', '.png', '.gif']
+    if not ext.lower() in valid_extensions:
+        raise ValidationError('Unsupported file extension. Please use: jpg, jpeg, png, or gif')
 
+def upload_to_path(instance, filename):
+    # Get the file extension
+    ext = os.path.splitext(filename)[1]
+    # Create path: media/user_id/post_id/filename
+    if hasattr(instance, 'post'):
+        return f'media/user_{instance.post.user.id}/post_{instance.post.postId}/{filename}'
+    return f'media/temp/{filename}'
 
 class Media(models.Model):
-    mediaFile = models.FileField(upload_to='media/')
+    mediaFile = models.ImageField(
+        upload_to=upload_to_path,
+        validators=[validate_file_extension],
+        help_text='Supported formats: JPG, JPEG, PNG, GIF'
+    )
+    uploadedAt = models.DateTimeField(auto_now_add=True)
+    fileSize = models.IntegerField(editable=False, null=True)
+    
+    width = models.IntegerField(editable=False, null=True)
+    height = models.IntegerField(editable=False, null=True)
+
+    def save(self, *args, **kwargs):
+        if self.mediaFile:
+            # Set file size
+            self.fileSize = self.mediaFile.size
+            
+            # Get image dimensions if it's an image
+            try:
+                from PIL import Image
+                img = Image.open(self.mediaFile)
+                self.width, self.height = img.size
+            except Exception as e:
+                print(f"Error getting image dimensions: {str(e)}")
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return str(self.mediaFile.name)
+        return f"{self.mediaFile.name} ({self.fileSize} bytes)"
+
+    class Meta:
+        verbose_name = 'Media'
+        verbose_name_plural = 'Media'
 
 class IGPost(models.Model):
     postId = models.CharField(max_length=255, unique=True, db_index=True)
