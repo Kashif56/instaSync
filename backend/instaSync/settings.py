@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.instagram',
+    'allauth.socialaccount.providers.facebook', 
     'dj_rest_auth',
     'rest_framework',
     'rest_framework.authtoken',
@@ -178,4 +179,20 @@ SIMPLE_JWT = {
     'ALGORITHM': 'HS256',                            # JWT algorithm
     'SIGNING_KEY': 'your-secret-key',                # Secret key for signing the JWT
     'AUTH_HEADER_TYPES': ('Bearer',),                # Authorization header type
+}
+
+
+
+
+SOCIALACCOUNT_PROVIDERS = {
+    'facebook': {
+        'APP': {
+            'client_id': '969370397860143',
+            'secret': '09dd87c366281e30249dbe164cd6926c',
+            'key': ''
+        },
+        'SCOPE': ['email', 'instagram_basic', 'pages_show_list', 'pages_read_engagement'],
+        'AUTH_PARAMS': {'access_type': 'online'},
+        'METHOD': 'oauth2',
+    }
 }
