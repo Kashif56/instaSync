@@ -6,6 +6,7 @@ import ForgotPassword from '../pages/Auth/ForgotPassword';
 import ResetPassword from '../pages/Auth/ResetPassword';
 import PasswordResetSuccess from '../pages/Auth/PasswordResetSuccess';
 import Profile from '../pages/Auth/Profile';
+import InstagramCallback from '../components/InstagramCallback';
 
 const AuthRoutes = () => {
   return (
@@ -16,6 +17,7 @@ const AuthRoutes = () => {
       <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route path="/password-reset-success" element={<PasswordResetSuccess />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/instagram/callback" element={<InstagramCallback />} />
     </Routes>
   );
 };

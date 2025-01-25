@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AiOutlineUser, AiOutlineLogout } from 'react-icons/ai';
+import { FaInstagram } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '../api/generalApiService';
-import { logout as logoutApi } from '../api/authApiService';
+import { logout as logoutApi, initiateInstagramLogin } from '../api/authApiService';
 import { logout as logoutAction } from '../redux/slicers/AuthSlice';
 import { toast } from 'react-toastify';
 
@@ -21,6 +22,15 @@ const Navbar = () => {
     } catch (error) {
       console.error('Logout error:', error);
       toast.error('Failed to logout. Please try again.');
+    }
+  };
+
+  const handleInstagramLogin = async () => {
+    try {
+      await initiateInstagramLogin();
+    } catch (error) {
+      console.error('Instagram login error:', error);
+      toast.error('Failed to initiate Instagram login. Please try again.');
     }
   };
 
@@ -49,20 +59,32 @@ const Navbar = () => {
             <Link to="/about" className="text-gray-300 hover:text-purple-400 px-3 py-2 text-sm font-medium transition-colors duration-200">
               About
             </Link>
-          </div>
 
-          <div className="flex items-center space-x-4">
-            <Link to="/profile" className="text-gray-300 hover:text-purple-400 px-3 py-2 text-sm font-medium transition-colors duration-200 flex items-center">
-              <span className='text-lg mr-1'><AiOutlineUser /></span>
-              {user_data?.username}
-            </Link>
-            <button 
-              className="bg-red-800 rounded-md text-white flex items-center space-x-3 hover:bg-red-700 px-3 py-2 text-sm font-medium transition-colors duration-200"
-              onClick={handleLogout}
-            >
-              <span className='text-lg mr-1'><AiOutlineLogout /></span>
-              Logout
-            </button>
+            {!user_data ? (
+              <>
+                <button
+                  onClick={handleInstagramLogin}
+                  className="flex items-center space-x-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-md hover:from-purple-600 hover:to-pink-600 transition-all duration-200"
+                >
+                  <FaInstagram className="text-xl" />
+                  <span>Login with Instagram</span>
+                </button>
+              </>
+            ) : (
+              <div className="flex items-center space-x-4">
+                <Link to="/profile" className="text-gray-300 hover:text-purple-400 px-3 py-2 text-sm font-medium transition-colors duration-200 flex items-center">
+                  <span className='text-lg mr-1'><AiOutlineUser /></span>
+                  {user_data?.username}
+                </Link>
+                <button 
+                  className="bg-red-800 rounded-md text-white flex items-center space-x-3 hover:bg-red-700 px-3 py-2 text-sm font-medium transition-colors duration-200"
+                  onClick={handleLogout}
+                >
+                  <span className='text-lg mr-1'><AiOutlineLogout /></span>
+                  Logout
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

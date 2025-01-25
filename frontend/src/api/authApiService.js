@@ -115,4 +115,33 @@ authApi.interceptors.request.use(
   }
 );
 
+export const initiateInstagramLogin = async () => {
+  try {
+    const response = await authApi.get('api/auth/instagram/login/');
+    // Redirect to Instagram authorization page
+    window.location.href = response.data.auth_url;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const handleInstagramCallback = async (code) => {
+  try {
+    const response = await authApi.get(`/auth/instagram/callback/?code=${code}`);
+    if (response.data.access_token) {
+      store.dispatch(loginAction({
+        user: {
+          username: response.data.username,
+          id: response.data.user_id
+        },
+        token: response.data.access_token
+      }));
+      setAuthToken(response.data.access_token);
+    }
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export default authApi;

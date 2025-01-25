@@ -1,6 +1,8 @@
-
-
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -10,12 +12,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-qeg13$!eiu_@!aw%_n@e0+7)ivk7v%7$a+#_l9p%+3s4mm+t*b'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'your-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -129,10 +131,18 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+# Instagram OAuth Settings
+INSTAGRAM_CLIENT_ID = os.getenv('INSTAGRAM_CLIENT_ID')
+INSTAGRAM_CLIENT_SECRET = os.getenv('INSTAGRAM_CLIENT_SECRET')
+INSTAGRAM_REDIRECT_URI = os.getenv('INSTAGRAM_REDIRECT_URI', 'https://4ac5-223-123-94-24.ngrok-free.app/api/auth/instagram/callback/')
+
+# CORS Settings
+CORS_ALLOW_ALL_ORIGINS = True  # Only for development
+
 
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 SITE_ID = 1  # Ensure this matches your Django site configuration
@@ -142,13 +152,6 @@ ACCOUNT_AUTHENTICATION_METHOD = "username"
 ACCOUNT_USERNAME_REQUIRED = True
 
 LOGIN_REDIRECT_URL = "/"  # Redirect URL after successful login
-
-
-
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
-
-
 
 REST_FRAMEWORK = {
     # Authentication settings
@@ -172,27 +175,12 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),  # Set access token lifetime
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # Set access token lifetime
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),    # Set refresh token lifetime
     'ROTATE_REFRESH_TOKENS': True,                   # Whether to rotate refresh tokens
     'BLACKLIST_AFTER_ROTATION': True,                # Blacklist old refresh tokens
     'ALGORITHM': 'HS256',                            # JWT algorithm
-    'SIGNING_KEY': 'your-secret-key',                # Secret key for signing the JWT
+    'SIGNING_KEY': 'django-insecure-qeg13$!eiu_@!aw%_n@e0+7)ivk7v%7$a+#_l9p%+3s4mm+t*b',                # Secret key for signing the JWT
     'AUTH_HEADER_TYPES': ('Bearer',),                # Authorization header type
 }
 
-
-
-
-SOCIALACCOUNT_PROVIDERS = {
-    'facebook': {
-        'APP': {
-            'client_id': '969370397860143',
-            'secret': '09dd87c366281e30249dbe164cd6926c',
-            'key': ''
-        },
-        'SCOPE': ['email', 'instagram_basic', 'pages_show_list', 'pages_read_engagement'],
-        'AUTH_PARAMS': {'access_type': 'online'},
-        'METHOD': 'oauth2',
-    }
-}
