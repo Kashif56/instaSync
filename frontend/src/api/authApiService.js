@@ -34,7 +34,7 @@ export const signUp = async (userData) => {
 
     // If signup is successful, automatically log the user in
     if (response.data.key) {
-      authApi.defaults.headers.common['Authorization'] = `Token ${response.data.key}`;
+      authApi.defaults.headers.common['Authorization'] = `Bearer ${response.data.key}`;
     }
     
     return response.data;
@@ -55,7 +55,7 @@ export const login = async (credentials) => {
     
     if (response.data.key) {
       // Update auth headers
-      authApi.defaults.headers.common['Authorization'] = `Token ${response.data.key}`;
+      authApi.defaults.headers.common['Authorization'] = `Bearer ${response.data.key}`;
       
       // Get user data after successful login
       const userResponse = await authApi.get('/api/auth/user/');
@@ -94,7 +94,7 @@ export const getAuthToken = () => {
 export const setAuthToken = (token) => {
   if (token) {
     localStorage.setItem('token', token);
-    authApi.defaults.headers.common['Authorization'] = `Token ${token}`;
+    authApi.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   } else {
     localStorage.removeItem('token');
     delete authApi.defaults.headers.common['Authorization'];
@@ -106,7 +106,7 @@ authApi.interceptors.request.use(
   (config) => {
     const token = getAuthToken();
     if (token) {
-      config.headers.Authorization = `Token ${token}`;
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
@@ -125,23 +125,5 @@ export const initiateInstagramLogin = async () => {
   }
 };
 
-export const handleInstagramCallback = async (code) => {
-  try {
-    const response = await authApi.get(`/auth/instagram/callback/?code=${code}`);
-    if (response.data.access_token) {
-      store.dispatch(loginAction({
-        user: {
-          username: response.data.username,
-          id: response.data.user_id
-        },
-        token: response.data.access_token
-      }));
-      setAuthToken(response.data.access_token);
-    }
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
 
 export default authApi;

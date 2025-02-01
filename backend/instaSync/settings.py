@@ -137,8 +137,31 @@ INSTAGRAM_CLIENT_SECRET = os.getenv('INSTAGRAM_CLIENT_SECRET')
 INSTAGRAM_REDIRECT_URI = os.getenv('INSTAGRAM_REDIRECT_URI', 'https://4ac5-223-123-94-24.ngrok-free.app/api/auth/instagram/callback/')
 
 # CORS Settings
-CORS_ALLOW_ALL_ORIGINS = True  # Only for development
-
+CORS_ALLOW_ALL_ORIGINS = False  # More secure setting
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "https://72c7-223-123-94-24.ngrok-free.app",
+]
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
@@ -183,4 +206,3 @@ SIMPLE_JWT = {
     'SIGNING_KEY': 'django-insecure-qeg13$!eiu_@!aw%_n@e0+7)ivk7v%7$a+#_l9p%+3s4mm+t*b',                # Secret key for signing the JWT
     'AUTH_HEADER_TYPES': ('Bearer',),                # Authorization header type
 }
-
