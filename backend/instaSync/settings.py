@@ -134,13 +134,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Instagram OAuth Settings
 INSTAGRAM_CLIENT_ID = os.getenv('INSTAGRAM_CLIENT_ID')
 INSTAGRAM_CLIENT_SECRET = os.getenv('INSTAGRAM_CLIENT_SECRET')
-INSTAGRAM_REDIRECT_URI = os.getenv('INSTAGRAM_REDIRECT_URI', 'https://4ac5-223-123-94-24.ngrok-free.app/api/auth/instagram/callback/')
+INSTAGRAM_REDIRECT_URI = os.getenv('INSTAGRAM_REDIRECT_URI')
 
 # CORS Settings
 CORS_ALLOW_ALL_ORIGINS = False  # More secure setting
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://72c7-223-123-94-24.ngrok-free.app",
+    'https://instasync.vercel.app',
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = [

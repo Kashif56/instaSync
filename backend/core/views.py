@@ -11,15 +11,7 @@ import json
 
 # Create your views here.
 
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def instagram_login(request):
-    """
-    Redirect users to Instagram's authorization page
-    """
-    instagram_auth_url = f"https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=4083979101834500&redirect_uri=https://e5b4-39-55-117-213.ngrok-free.app/api/auth/instagram/callback/&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights"
 
-    return Response({"status": "success", "auth_url": instagram_auth_url})
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -36,7 +28,7 @@ def instagram_callback(request):
         'client_id': settings.INSTAGRAM_CLIENT_ID,
         'client_secret': settings.INSTAGRAM_CLIENT_SECRET,
         'grant_type': 'authorization_code',
-        'redirect_uri': "https://8362-39-47-5-96.ngrok-free.app/api/auth/instagram/callback/",
+        'redirect_uri': settings.INSTAGRAM_REDIRECT_URI,
         'code': code
     }
 
