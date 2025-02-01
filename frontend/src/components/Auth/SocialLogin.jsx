@@ -1,13 +1,13 @@
 import React from 'react';
 import { initiateInstagramLogin } from '../../api/authApiService';
 import { toast } from 'react-toastify';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const SocialLogin = () => {
   const navigate = useNavigate();
   const handleInstagramLogin = async () => {
     try {
-      navigate("https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=4083979101834500&redirect_uri=https://bc10-39-55-117-213.ngrok-free.app/api/auth/instagram/callback/&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights")
+      navigate("https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=4083979101834500&redirect_uri=https://instasync.vercel.app/api/auth/instagram/callback/&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights")
     } catch (error) {
       console.error('Instagram login error:', error);
       toast.error('Failed to initiate Instagram login. Please try again.');
