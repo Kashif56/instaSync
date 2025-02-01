@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Login from '../pages/Auth/Login';
-import SignUp from '../pages/Auth/SignUp';
+import Signup from '../pages/Auth/Signup';
 import ForgotPassword from '../pages/Auth/ForgotPassword';
 import ResetPassword from '../pages/Auth/ResetPassword';
 import PasswordResetSuccess from '../pages/Auth/PasswordResetSuccess';
@@ -12,7 +12,7 @@ const AuthRoutes = () => {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<SignUp />} />
+      <Route path="/signup" element={<Signup />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route path="/password-reset-success" element={<PasswordResetSuccess />} />

@@ -5,7 +5,7 @@ import SocialLogin from '../../components/Auth/SocialLogin';
 import Toast from '../../components/Toast';
 import { signUp } from '../../api/authApiService';
 
-const SignUp = () => {
+const Signup = () => {
   const [toast, setToast] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -97,4 +97,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default Signup;
