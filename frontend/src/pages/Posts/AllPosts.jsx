@@ -13,6 +13,7 @@ const AllPosts = () => {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Get initial filter values from URL query parameters
   const queryParams = new URLSearchParams(location.search);
@@ -27,7 +28,6 @@ const AllPosts = () => {
     if (filters.status !== 'all') params.set('status', filters.status);
     if (filters.sort !== 'recent') params.set('sort', filters.sort);
     
-    // Update URL without reloading the page
     const newUrl = `${location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
     navigate(newUrl, { replace: true });
   };
@@ -36,13 +36,19 @@ const AllPosts = () => {
     const fetchPosts = async () => {
       try {
         setIsLoading(true);
+        setError(null);
         const response = await getUserPosts();
-        const fetchedPosts = response.data;
+        // Ensure we have an array of posts
+        const fetchedPosts = Array.isArray(response.data) ? response.data : [];
         setPosts(fetchedPosts);
         setFilteredPosts(fetchedPosts);
       } catch (error) {
         console.error('Error fetching posts:', error);
+        setError('Failed to load posts. Please try again.');
         toast.error('Failed to load posts. Please try again.');
+        // Set empty arrays to prevent undefined errors
+        setPosts([]);
+        setFilteredPosts([]);
       } finally {
         setIsLoading(false);
       }
@@ -51,12 +57,12 @@ const AllPosts = () => {
   }, []);
 
   useEffect(() => {
-    filterAndSortPosts();
-    // Update URL query parameters whenever filters change
-    updateQueryParams({ search: searchTerm, status: statusFilter, sort: sortBy });
+    if (Array.isArray(posts)) {
+      filterAndSortPosts();
+      updateQueryParams({ search: searchTerm, status: statusFilter, sort: sortBy });
+    }
   }, [searchTerm, statusFilter, sortBy, posts]);
 
-  // Listen for URL changes (e.g., when user uses browser back/forward)
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     setSearchTerm(params.get('search') || '');
@@ -65,19 +71,25 @@ const AllPosts = () => {
   }, [location.search]);
 
   const filterAndSortPosts = () => {
+    if (!Array.isArray(posts)) {
+      setFilteredPosts([]);
+      return;
+    }
+
     let result = [...posts];
 
     // Apply search filter
     if (searchTerm) {
       result = result.filter(post =>
-        post.caption?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.tags?.toLowerCase().includes(searchTerm.toLowerCase())
+        (post?.caption || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (post?.tags || '').toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     // Apply status filter
     if (statusFilter !== 'all') {
       result = result.filter(post => {
+        if (!post?.scheduledDateTime) return false;
         const postDate = new Date(post.scheduledDateTime);
         const now = new Date();
         
@@ -94,12 +106,12 @@ const AllPosts = () => {
     result.sort((a, b) => {
       switch (sortBy) {
         case 'recent':
-          return new Date(b.scheduledDateTime) - new Date(a.scheduledDateTime);
+          return new Date(b?.scheduledDateTime || 0) - new Date(a?.scheduledDateTime || 0);
         case 'popular':
-          return (b.likes || 0) - (a.likes || 0);
+          return (b?.likes || 0) - (a?.likes || 0);
         case 'engagement':
-          const engagementA = (a.likes || 0) + (a.comments || 0);
-          const engagementB = (b.likes || 0) + (b.comments || 0);
+          const engagementA = (a?.likes || 0) + (a?.comments || 0);
+          const engagementB = (b?.likes || 0) + (b?.comments || 0);
           return engagementB - engagementA;
         default:
           return 0;
@@ -127,8 +139,7 @@ const AllPosts = () => {
 
   const handleDeletePost = async (postId) => {
     try {
-      // await deletePost(postId); // This function is not defined in the original code
-      setPosts(posts.filter(post => post.id !== postId));
+      setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
       toast.success('Post deleted successfully');
     } catch (error) {
       console.error('Error deleting post:', error);
@@ -141,7 +152,6 @@ const AllPosts = () => {
       <div className="min-h-screen flex flex-col bg-gradient-to-r from-gray-900 via-purple-900 to-gray-900">
         <Navbar />
       
-        {/* Background pattern */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f46e5,#9333ea)] opacity-30">
             <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
@@ -156,7 +166,6 @@ const AllPosts = () => {
           </div>
         </div>
 
-        {/* Content */}
         <div className="relative z-10 pt-20 flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex items-center justify-between mb-8">
             <div>
@@ -170,12 +179,11 @@ const AllPosts = () => {
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2 bg-gray-900/50 backdrop-blur-xl px-4 py-2 rounded-lg border border-gray-800">
                 <span className="text-purple-400 font-medium">Total Posts:</span>
-                <span className="text-white font-bold">{filteredPosts ? filteredPosts.length : 0}</span>
+                <span className="text-white font-bold">{Array.isArray(filteredPosts) ? filteredPosts.length : 0}</span>
               </div>
             </div>
           </div>
 
-          {/* Filters */}
           <PostsFilter 
             onFilterChange={handleFilterChange}
             searchTerm={searchTerm}
@@ -183,40 +191,26 @@ const AllPosts = () => {
             sortBy={sortBy}
           />
 
-          {/* Posts Grid */}
           <div className="mt-8">
             {isLoading ? (
               <div className="flex justify-center items-center py-12">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
               </div>
+            ) : error ? (
+              <div className="text-center py-12 text-red-400">{error}</div>
             ) : (
               <>
-                <PostsGrid posts={filteredPosts} onDeletePost={handleDeletePost} />
-                {filteredPosts.length === 0 && (
-                  <div className="text-center py-12">
-                    <svg
-                      className="mx-auto h-12 w-12 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 48 48"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 14v20c0 4.4 3.6 8 8 8h16c4.4 0 8-3.6 8-8V14M8 14h32M8 14H6m34 0h2m-19 0V6c0-1.1.9-2 2-2h6c1.1 0 2 .9 2 2v8m-10 0h10"
-                      />
-                    </svg>
-                    <h3 className="mt-4 text-lg font-medium text-gray-200">No posts found</h3>
-                    <p className="mt-2 text-gray-400">
-                      {searchTerm ? 'Try adjusting your search or filter criteria' : 'Get started by creating your first post'}
-                    </p>
+                <PostsGrid posts={filteredPosts || []} onDeletePost={handleDeletePost} />
+                {(!Array.isArray(filteredPosts) || filteredPosts.length === 0) && (
+                  <div className="text-center py-12 text-gray-400">
+                    No posts found
                   </div>
                 )}
               </>
             )}
           </div>
         </div>
+        <Footer />
       </div>
     </>
   );

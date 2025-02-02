@@ -53,8 +53,34 @@ export const createPost = async (postData) => {
 export const getUserPosts = async (page = 1, limit = 10) => {
   try {
     const response = await api.get('/posts/');
-    return response.data;
+    console.log('Posts API Response:', response);
+    
+    // Ensure we return an array even if the response is empty or malformed
+    if (!response.data) {
+      console.warn('No data in response from posts API');
+      return { data: [] };
+    }
+    
+    // If response.data is already an array, return it wrapped in an object
+    if (Array.isArray(response.data)) {
+      return { data: response.data };
+    }
+    
+    // If response.data has a results field (common in Django REST Framework)
+    if (response.data.results && Array.isArray(response.data.results)) {
+      return { data: response.data.results };
+    }
+    
+    // If we get here, the response format is unexpected
+    console.warn('Unexpected response format from posts API:', response.data);
+    return { data: [] };
   } catch (error) {
+    console.error('Error fetching posts:', error);
+    console.error('Error details:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status
+    });
     throw error;
   }
 };
