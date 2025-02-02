@@ -13,6 +13,8 @@ const InstaLoginSuccess = () => {
   const code = searchParams.get('code');
 
   useEffect(() => {
+    console.log('Code:', code);
+    
     let isMounted = true;
 
     const processInstagramCallback = async () => {
