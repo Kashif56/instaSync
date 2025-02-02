@@ -2,7 +2,7 @@ import axios from 'axios';
 import store from '../redux/store';
 import { login as loginAction, logout as logoutAction } from '../redux/slicers/AuthSlice';
 
-const API_URL = 'https://c9d0-39-55-117-213.ngrok-free.app';
+const API_URL = 'https://c9d0-39-55-117-213.ngrok-free.app/api';
 
 const authApi = axios.create({
   baseURL: API_URL,
@@ -25,7 +25,7 @@ authApi.interceptors.response.use(
 
 export const signUp = async (userData) => {
   try {
-    const response = await authApi.post('/api/auth/registration/', {
+    const response = await authApi.post('/auth/registration/', {
       username: userData.username,
       email: userData.email,
       password1: userData.password,
@@ -46,7 +46,7 @@ export const signUp = async (userData) => {
 export const login = async (credentials) => {
   try {
     // dj-rest-auth expects email/username and password
-    const response = await authApi.post('/api/auth/login/', {
+    const response = await authApi.post('/auth/login/', {
       username: credentials.username,
       password: credentials.password,
     });
@@ -58,7 +58,7 @@ export const login = async (credentials) => {
       authApi.defaults.headers.common['Authorization'] = `Bearer ${response.data.key}`;
       
       // Get user data after successful login
-      const userResponse = await authApi.get('/api/auth/user/');
+      const userResponse = await authApi.get('/auth/user/');
       
       // Dispatch login action with user data and token
       store.dispatch(loginAction({
@@ -75,7 +75,7 @@ export const login = async (credentials) => {
 
 export const logout = async () => {
   try {
-    await authApi.post('/api/auth/logout/');
+    await authApi.post('/auth/logout/');
     // Dispatch logout action
     store.dispatch(logoutAction());
     // Clean up auth headers
@@ -117,7 +117,7 @@ authApi.interceptors.request.use(
 
 export const initiateInstagramLogin = async () => {
   try {
-    const response = await authApi.get('api/auth/instagram/login/');
+    const response = await authApi.get('auth/instagram/login/');
     // Redirect to Instagram authorization page
     window.location.href = response.data.auth_url;
   } catch (error) {

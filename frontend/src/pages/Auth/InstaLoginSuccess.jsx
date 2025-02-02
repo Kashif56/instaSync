@@ -23,17 +23,25 @@ const InstaLoginSuccess = () => {
       
       try {
         setIsProcessing(true);
+        console.log('Processing Instagram callback with code:', code);
         
-        const response = await authApi.get('/api/auth/instagram/callback/', {
+        const response = await authApi.get('/auth/instagram/callback/', {
           params: { code }
         });
+
+        console.log('Instagram callback response:', response.data);
 
         if (!isMounted) return;
         
         if (response.data.status === 'success') {
           const { username, email, jwt_token, refresh_token } = response.data;
-          console.log('Login response:', { username, email, jwt_token: jwt_token?.substring(0, 10) + '...' });
+          console.log('Login successful:', { username, email, hasToken: !!jwt_token });
           
+          // Save token to localStorage first
+          localStorage.setItem('token', jwt_token);
+          localStorage.setItem('refreshToken', refresh_token);
+          
+          // Then dispatch login action
           dispatch(login({
             user: {
               username,
