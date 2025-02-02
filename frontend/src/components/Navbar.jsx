@@ -12,6 +12,8 @@ const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userData = localStorage.getItem('userData');
+  const token = localStorage.getItem('token');
+  console.log('Token:', token);
   const user_data = JSON.parse(userData);
 
   const handleLogout = async () => {
