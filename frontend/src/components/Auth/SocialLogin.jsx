@@ -7,7 +7,7 @@ const SocialLogin = () => {
   
   const handleInstagramLogin = async () => {
     try {
-      const instagramAuthUrl = "https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=4083979101834500&redirect_uri=https://c9d0-39-55-117-213.ngrok-free.app/api/auth/instagram/callback/&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights"
+      const instagramAuthUrl = "https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=4083979101834500&redirect_uri=https://instasync.vercel.app/auth/instagram/callback&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights"
       
       window.location.href = instagramAuthUrl;
     } catch (error) {
