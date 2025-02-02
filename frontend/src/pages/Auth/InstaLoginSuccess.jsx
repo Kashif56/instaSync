@@ -70,7 +70,7 @@ const InstaLoginSuccess = () => {
     return () => {
       isMounted = false;
     };
-  }, [code, dispatch, navigate, isProcessing]);
+  }, [code]);
 
   if (!code) {
     return null;

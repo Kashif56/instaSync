@@ -18,6 +18,7 @@ from userProfile.models import UserProfile
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def instagram_callback(request):
+    print("Received callback from Instagram")
     """
     Handle the Instagram OAuth callback
     """
