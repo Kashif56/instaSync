@@ -4,10 +4,10 @@ from .models import IGPost, Media
 
 
 class IGPostAdmin(admin.ModelAdmin):
-    list_display = ('postId', 'user', 'caption', 'tags', 'location', 'scheduledDateTime')
+    list_display = ('postId', 'user', 'location', 'scheduledDateTime')
     list_filter = ('user', )
-    search_fields = ('postId', 'user__username', 'user__email', 'caption', 'tags', 'location')
-    list_editable = ('caption', 'tags', 'location', 'scheduledDateTime')
+    search_fields = ('postId', 'user__username', 'user__email', 'location')
+    list_editable = ('location', 'scheduledDateTime')
     list_per_page = 50
 
 

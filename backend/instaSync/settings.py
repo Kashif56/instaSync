@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'posts',
     'userProfile',
     'corsheaders',
+    'django_q'
 ]
 
 MIDDLEWARE = [
@@ -206,4 +207,15 @@ SIMPLE_JWT = {
     'ALGORITHM': 'HS256',                            # JWT algorithm
     'SIGNING_KEY': 'django-insecure-qeg13$!eiu_@!aw%_n@e0+7)ivk7v%7$a+#_l9p%+3s4mm+t*b',                # Secret key for signing the JWT
     'AUTH_HEADER_TYPES': ('Bearer',),                # Authorization header type
+}
+
+
+
+
+Q_CLUSTER = {
+    "name": "DjangoQ",
+    "workers": 4,  # Number of parallel workers
+    "timeout": 60,  # Task timeout in seconds
+    "retry": 120,  # Retry failed tasks after 120 seconds
+    "orm": "default",  # Use Django ORM for task scheduling
 }

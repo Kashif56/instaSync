@@ -130,6 +130,8 @@ def createPost(request):
         # Add media to post (if you're using a ManyToMany relationship)
         for media in media_objects:
             new_post.media.add(media)
+        
+        new_post.schedule_post()
 
         print(f"Successfully created post {new_post.postId} with {len(media_objects)} images")
 

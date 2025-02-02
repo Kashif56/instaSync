@@ -32,6 +32,7 @@ const InstaLoginSuccess = () => {
         
         if (response.data.status === 'success') {
           const { username, email, jwt_token, refresh_token } = response.data;
+          console.log('Login response:', { username, email, jwt_token: jwt_token?.substring(0, 10) + '...' });
           
           dispatch(login({
             user: {
@@ -42,6 +43,10 @@ const InstaLoginSuccess = () => {
             refreshToken: refresh_token,
           }));
 
+          // Verify token was saved
+          const savedToken = localStorage.getItem('token');
+          console.log('Token saved in localStorage:', savedToken ? 'Yes' : 'No');
+          
           // Clear code from URL
           window.history.replaceState({}, document.title, window.location.pathname);
           toast.success('Successfully logged in with Instagram!');

@@ -3,6 +3,8 @@ from django.db import models
 from django.contrib.auth.models import User
 import os
 from django.core.exceptions import ValidationError
+from django_q.tasks import schedule
+from datetime import datetime, timedelta
 
 def validate_file_extension(value):
     ext = os.path.splitext(value.name)[1]
@@ -71,6 +73,19 @@ class IGPost(models.Model):
     views = models.IntegerField(default=0)
     comments = models.IntegerField(default=0)
     shares = models.IntegerField(default=0)
+
+
+
+    def schedule_post(self):
+        """
+        Schedule this post to be published at the given time using Django Q.
+        """
+        schedule(
+            "posts.tasks.publish_post",
+            self.postId,
+            schedule_type="O",  # One-time execution
+            next_run=self.scheduledDateTime,
+        )
 
     def __str__(self):
         return self.postId
