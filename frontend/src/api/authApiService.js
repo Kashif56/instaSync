@@ -2,7 +2,7 @@ import axios from 'axios';
 import store from '../redux/store';
 import { login as loginAction, logout as logoutAction } from '../redux/slicers/AuthSlice';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = 'https://c9d0-39-55-117-213.ngrok-free.app';
 
 const authApi = axios.create({
   baseURL: API_URL,

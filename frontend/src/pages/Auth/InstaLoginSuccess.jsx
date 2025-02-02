@@ -11,7 +11,7 @@ const InstaLoginSuccess = () => {
   const [searchParams] = useSearchParams();
   const [isProcessing, setIsProcessing] = useState(false);
   const code = searchParams.get('code');
-  console.log("You are viewing InstaLoginSuccess page");
+  
 
   useEffect(() => {
     
@@ -23,7 +23,6 @@ const InstaLoginSuccess = () => {
       
       try {
         setIsProcessing(true);
-        console.log('Processing Instagram callback with code:', code);
         
         const response = await authApi.get('/api/auth/instagram/callback/', {
           params: { code }
