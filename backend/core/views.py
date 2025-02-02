@@ -9,6 +9,8 @@ from django.http import HttpResponse
 import requests
 import json
 
+from userProfile.models import UserProfile
+
 # Create your views here.
 
 
@@ -35,6 +37,8 @@ def instagram_callback(request):
         'redirect_uri': settings.INSTAGRAM_REDIRECT_URI,
         'code': code
     }
+
+    print(data)
 
     try:
         # Get access token
@@ -94,8 +98,9 @@ def instagram_callback(request):
             }
         )
 
-        # Store Instagram data
-        profile = user.profile
+        profile, created = UserProfile.objects.get_or_create(user=user)
+
+        
         profile.instagram_id = user_id
         profile.instagram_username = username
         profile.instagram_access_token = access_token
