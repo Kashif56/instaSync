@@ -72,7 +72,7 @@ const InstaLoginSuccess = () => {
         toast.error(errorMessage);
         navigate('/auth/login');
       } finally {
-        console.log(response.data);
+        
         if (isMounted) {
           setIsProcessing(false);
         }
