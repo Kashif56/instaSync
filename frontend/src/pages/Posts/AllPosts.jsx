@@ -170,7 +170,7 @@ const AllPosts = () => {
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2 bg-gray-900/50 backdrop-blur-xl px-4 py-2 rounded-lg border border-gray-800">
                 <span className="text-purple-400 font-medium">Total Posts:</span>
-                <span className="text-white font-bold">{filteredPosts.length}</span>
+                <span className="text-white font-bold">{filteredPosts ? filteredPosts.length : 0}</span>
               </div>
             </div>
           </div>
