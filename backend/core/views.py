@@ -21,8 +21,12 @@ def instagram_callback(request):
     """
     code = request.GET.get('code')
     if not code:
-        return Response({'error': 'No authorization code provided'}, status=400)
+        return Response({
+            'error': 'No authorization code provided',
+            'status': 'error'
+        }, status=400)
 
+    # Exchange code for access token
     token_url = 'https://api.instagram.com/oauth/access_token'
     data = {
         'client_id': settings.INSTAGRAM_CLIENT_ID,
@@ -33,6 +37,7 @@ def instagram_callback(request):
     }
 
     try:
+        # Get access token
         response = requests.post(token_url, data=data)
         token_data = response.json()
 
@@ -49,19 +54,23 @@ def instagram_callback(request):
                 'status': 'error'
             }, status=400)
 
-        if response.status_code != 200:
+        access_token = token_data.get('access_token')
+        user_id = token_data.get('user_id')
+
+        if not access_token or not user_id:
             return Response({
-                'error': 'Failed to exchange authorization code for access token',
+                'error': 'Failed to obtain access token',
                 'status': 'error'
-            }, status=response.status_code)
+            }, status=400)
 
-        access_token = token_data['access_token']
-        user_id = token_data['user_id']
-
-        # Get user info from Instagram
-        user_info_url = f'https://graph.instagram.com/me?fields=id,username&access_token={access_token}'
-        user_response = requests.get(user_info_url)
-
+        # Get user info from Instagram Graph API
+        user_info_url = f'https://graph.instagram.com/me'
+        params = {
+            'fields': 'id,username,account_type',
+            'access_token': access_token
+        }
+        user_response = requests.get(user_info_url, params=params)
+        
         if user_response.status_code != 200:
             return Response({
                 'error': 'Failed to fetch user information from Instagram',
@@ -81,51 +90,39 @@ def instagram_callback(request):
         user, created = User.objects.get_or_create(
             username=username,
             defaults={
-                'email': f"{username}@instagram.com",  
+                'email': f"{username}@instagram.com",
             }
         )
-        user.backend = 'allauth.account.auth_backends.AuthenticationBackend'
 
-        if created:
-            user.set_unusable_password()
-            user.save()
-
-        # Log the user in
-        login(request, user)
+        # Store Instagram data
+        profile = user.profile
+        profile.instagram_id = user_id
+        profile.instagram_username = username
+        profile.instagram_access_token = access_token
+        profile.save()
 
         # Generate JWT tokens
         from rest_framework_simplejwt.tokens import RefreshToken
         refresh = RefreshToken.for_user(user)
-        jwtToken = str(refresh.access_token)
-        refresh_token = str(refresh)
 
-        # Update or create UserProfile
-        from userProfile.models import UserProfile
-        userProfile, _ = UserProfile.objects.get_or_create(user=user)
-        userProfile.instagramUserId = user_id
-        userProfile.instagramAccessToken = access_token
-        userProfile.instagramUsername = username
-        userProfile.save()
-
-        response_data = {
+        return Response({
             'status': 'success',
-            'message': 'Successfully authenticated with Instagram',
             'username': username,
             'email': user.email,
-            'refresh_token': refresh_token,
-            'jwt_token': jwtToken
-        }
+            'jwt_token': str(refresh.access_token),
+            'refresh_token': str(refresh),
+            'instagram_connected': True,
+            'account_type': user_data.get('account_type', 'personal')
+        })
 
-        return Response(response_data, status=200)
-
-    except requests.exceptions.RequestException as e:
+    except requests.RequestException as e:
         return Response({
-            'error': f"An error occurred while connecting to Instagram: {str(e)}",
+            'error': f'Network error: {str(e)}',
             'status': 'error'
         }, status=500)
     except Exception as e:
         return Response({
-            'error': f"An unexpected error occurred: {str(e)}",
+            'error': f'Unexpected error: {str(e)}',
             'status': 'error'
         }, status=500)
 
