@@ -11,9 +11,10 @@ const InstaLoginSuccess = () => {
   const [searchParams] = useSearchParams();
   const [isProcessing, setIsProcessing] = useState(false);
   const code = searchParams.get('code');
+  console.log("You are viewing InstaLoginSuccess page");
 
   useEffect(() => {
-    console.log('Code:', code);
+    
     
     let isMounted = true;
 
@@ -72,9 +73,6 @@ const InstaLoginSuccess = () => {
     };
   }, [code]);
 
-  if (!code) {
-    return null;
-  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -83,6 +81,7 @@ const InstaLoginSuccess = () => {
           {isProcessing ? 'Processing Instagram Login...' : 'Redirecting...'}
           Hello
         </h2>
+        <h1 className="text-2xl font-semibold text-center text-gray-800 mb-4">Page Check</h1>
         <div className="flex justify-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
         </div>
